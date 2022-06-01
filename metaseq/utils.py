@@ -3,7 +3,6 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
-import argparse
 import copy
 import importlib
 import logging
@@ -13,7 +12,6 @@ import sys
 import warnings
 from typing import Callable, Dict, List, Optional
 
-import numpy as np
 import torch
 import torch.distributed as dist
 import torch.nn.functional as F
