@@ -130,23 +130,6 @@ def load_align_dict(replace_unk):
 norm_type2_reduce_op = {"l2": dist.ReduceOp.SUM, "inf": dist.ReduceOp.MAX}
 
 
-def post_process_prediction(
-    hypo_tokens,
-    alignment,
-    tgt_dict,
-    remove_bpe=None,
-    extra_symbols_to_ignore=None,
-):
-    hypo_str = tgt_dict.string(
-        hypo_tokens, remove_bpe, extra_symbols_to_ignore=extra_symbols_to_ignore
-    )
-    if remove_bpe is not None:
-        # Convert back to tokens for evaluating without BPE
-        # Note that the dictionary can be modified inside the method.
-        hypo_tokens = tgt_dict.encode_line(hypo_str, add_if_not_exist=True)
-    return hypo_tokens, hypo_str, alignment
-
-
 def make_positions(tensor, padding_idx: int, onnx_trace: bool = False):
     """Replace non-padding symbols with their position numbers.
 
