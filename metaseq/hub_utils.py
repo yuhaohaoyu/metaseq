@@ -413,22 +413,6 @@ class GeneratorHubInterface(nn.Module):
         return batch_iterator
 
 
-class BPEHubInterface(object):
-    """PyTorch Hub interface for Byte-Pair Encoding (BPE)."""
-
-    def __init__(self, bpe, **kwargs):
-        super().__init__()
-        args = argparse.Namespace(bpe=bpe, **kwargs)
-        self.bpe = encoders.build_bpe(args)
-        assert self.bpe is not None
-
-    def encode(self, sentence: str) -> str:
-        return self.bpe.encode(sentence)
-
-    def decode(self, sentence: str) -> str:
-        return self.bpe.decode(sentence)
-
-
 class TokenizerHubInterface(object):
     """PyTorch Hub interface for tokenization."""
 
