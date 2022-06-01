@@ -511,16 +511,6 @@ class CudaEnvironment(object):
         logger.info(first_line)
 
 
-def round_safe(x):
-    if torch.is_tensor(x):
-        return float(np.round(x.cpu().numpy(), 4))
-    else:
-        try:
-            return round(x, 4)
-        except Exception:
-            return x
-
-
 def remove_prefix(text: str, prefix: str):
     if text.startswith(prefix):
         return text[len(prefix) :]
