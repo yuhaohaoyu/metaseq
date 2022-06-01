@@ -413,22 +413,6 @@ class GeneratorHubInterface(nn.Module):
         return batch_iterator
 
 
-class TokenizerHubInterface(object):
-    """PyTorch Hub interface for tokenization."""
-
-    def __init__(self, tokenizer, **kwargs):
-        super().__init__()
-        args = argparse.Namespace(tokenizer=tokenizer, **kwargs)
-        self.tokenizer = encoders.build_tokenizer(args)
-        assert self.tokenizer is not None
-
-    def encode(self, sentence: str) -> str:
-        return self.tokenizer.encode(sentence)
-
-    def decode(self, sentence: str) -> str:
-        return self.tokenizer.decode(sentence)
-
-
 class GeneratorInterface:
     """
     PyTorch Hub interface for generating sequences from a pre-trained
