@@ -10,7 +10,7 @@ import tempfile
 import unittest
 
 import torch
-from metaseq import tokenizer
+from metaseq import utils
 from metaseq.data import Dictionary
 
 
@@ -130,7 +130,7 @@ class TestDictionary(unittest.TestCase):
 
             dict = Dictionary()
             Dictionary.add_file_to_dictionary(
-                filename, dict, tokenizer.tokenize_line, 10
+                filename, dict, utils.tokenize_line, 10
             )
             dict.finalize(threshold=0, nwords=-1, padding_factor=8)
 

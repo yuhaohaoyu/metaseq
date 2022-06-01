@@ -11,7 +11,7 @@ from typing import Any, Callable, Dict, List
 import torch
 from omegaconf import DictConfig
 
-from metaseq import metrics, search, tokenizer, utils
+from metaseq import metrics, search, utils
 from metaseq.data import Dictionary, BaseDataset, data_utils, encoders, iterators
 from metaseq.dataclass import MetaseqDataclass
 from metaseq.dataclass.utils import gen_parser_from_dataclass
@@ -115,7 +115,7 @@ class BaseTask(object):
         d = Dictionary()
         for filename in filenames:
             Dictionary.add_file_to_dictionary(
-                filename, d, tokenizer.tokenize_line, workers
+                filename, d, utils.tokenize_line, workers
             )
         d.finalize(threshold=threshold, nwords=nwords, padding_factor=padding_factor)
         return d

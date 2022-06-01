@@ -3,6 +3,7 @@
 # This source code is licensed under the MIT license found in the
 # LICENSE file in the root directory of this source tree.
 
+import re
 import copy
 import importlib
 import logging
@@ -30,8 +31,14 @@ except ImportError:
 
 logger = logging.getLogger(__name__)
 
-
 MANIFOLD_PATH_SEP = "|"
+SPACE_NORMALIZER = re.compile(r"\s+")
+
+
+def tokenize_line(line):
+    line = SPACE_NORMALIZER.sub(" ", line)
+    line = line.strip()
+    return line.split()
 
 
 def split_paths(paths: str) -> List[str]:
