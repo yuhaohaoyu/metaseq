@@ -130,14 +130,6 @@ def load_align_dict(replace_unk):
 norm_type2_reduce_op = {"l2": dist.ReduceOp.SUM, "inf": dist.ReduceOp.MAX}
 
 
-def load_embedding(embed_dict, vocab, embedding):
-    for idx in range(len(vocab)):
-        token = vocab[idx]
-        if token in embed_dict:
-            embedding.weight.data[idx] = embed_dict[token]
-    return embedding
-
-
 def post_process_prediction(
     hypo_tokens,
     alignment,
