@@ -511,17 +511,6 @@ class CudaEnvironment(object):
         logger.info(first_line)
 
 
-def eval_str_list(x, type=float):
-    if x is None:
-        return None
-    if isinstance(x, str):
-        x = eval(x)
-    try:
-        return list(map(type, x))
-    except TypeError:
-        return [type(x)]
-
-
 def round_safe(x):
     if torch.is_tensor(x):
         return float(np.round(x.cpu().numpy(), 4))
