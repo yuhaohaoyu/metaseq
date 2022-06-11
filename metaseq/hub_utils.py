@@ -7,14 +7,15 @@ import argparse
 import ast
 import copy
 import logging
+import numpy as np
+from omegaconf import open_dict
 import os
 import time
+from tqdm import tqdm
 from argparse import Namespace
 from typing import Any, Dict, Iterator, List, Optional
 
-import numpy as np
 import torch
-from omegaconf import open_dict
 from torch import nn
 
 from metaseq import checkpoint_utils, tasks
@@ -247,7 +248,7 @@ class GeneratorHubInterface(nn.Module):
         )
         # To ensure even batch count across workers, some batches might be dummy batches. We shouldn't score these.
         first_batch = None
-        for batch in batches:
+        for batch in tqdm(batches):
             is_dummy_batch = False
             if not first_batch and "net_input" in batch:
                 first_batch = batch
