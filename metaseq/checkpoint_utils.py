@@ -411,15 +411,15 @@ def load_checkpoint_to_cpu(path, arg_overrides=None, load_on_all_ranks=False) ->
             state = _merge_flat_fsdp_shards([torch_load_cpu(f) for f in paths_to_load])
         else:
             state = torch_load_cpu(local_path)
-    except Exception:
+    except Exception as e:
         print(
             "got exception while trying to load",
             path,
             "with paths to load",
             paths_to_load,
+            e,
         )
     logger.info("Done reading from disk")
-
     if "cfg" in state and state["cfg"] is not None:
         # hack to be able to set Namespace in dict config. this should be removed when we update to newer
         # omegaconf version that supports object flags, or when we migrate all existing models
