@@ -10,10 +10,10 @@ BATCH_SIZE = 2048  # silly high bc we dynamically batch by MAX_BATCH_TOKENS
 MAX_BATCH_TOKENS = 1
 DEFAULT_PORT = 6010
 
-MODEL='175B'
+MODEL='66B'
 # MODEL='1.3B'
 
-if MODEL == "175B":
+if MODEL == "66B":
     MODEL_PARALLEL = 8
     TOTAL_WORLD_SIZE = 8
 else:
@@ -48,16 +48,20 @@ except ImportError:
 
 # CHECKPOINT_LOCAL = os.path.join(CHECKPOINT_LOCAL_FOLDER, "consolidated.pt")
 
-CHECKPOINT_FOLDER = os.path.join(MODEL_SHARED_FOLDER, MODEL, f"consolidated_mp_{MODEL_PARALLEL}")
+# HAO CHECKPOINT_FOLDER = os.path.join(MODEL_SHARED_FOLDER, MODEL, f"consolidated_mp_{MODEL_PARALLEL}")
+CHECKPOINT_FOLDER = "/nvme0/haoyu/metaseq-opt-models/66b/dependencies"
 
 # where to store them on SSD for faster loading
-CHECKPOINT_LOCAL_FOLDER = os.path.join(LOCAL_SSD, MODEL, f"consolidated_mp_{MODEL_PARALLEL}")
+# HAO CHECKPOINT_LOCAL_FOLDER = os.path.join(LOCAL_SSD, MODEL, f"consolidated_mp_{MODEL_PARALLEL}")
 
-CHECKPOINT_LOCAL = os.path.join(CHECKPOINT_LOCAL_FOLDER, "consolidated.pt")
+# HAO CHECKPOINT_LOCAL = os.path.join(CHECKPOINT_LOCAL_FOLDER, "consolidated.pt")
 
 # tokenizer files
-BPE_MERGES = os.path.join("/data/gpt-z/models/gptz/", "gpt2-merges.txt")
-BPE_VOCAB = os.path.join("/data/gpt-z/models/gptz/", "gpt2-vocab.json")
+# HAO BPE_MERGES = os.path.join("/data/gpt-z/models/gptz/", "gpt2-merges.txt")
+# HAO BPE_VOCAB = os.path.join("/data/gpt-z/models/gptz/", "gpt2-vocab.json")
+BPE_MERGES = os.path.join(CHECKPOINT_FOLDER, "gpt2-merges.txt")
+BPE_VOCAB = os.path.join(CHECKPOINT_FOLDER, "gpt2-vocab.json")
+MODEL_FILE = os.path.join(CHECKPOINT_FOLDER, "reshard.pt")
 
 
 LAUNCH_ARGS = [
@@ -70,13 +74,15 @@ LAUNCH_ARGS = [
     "--bpe hf_byte_bpe",
     f"--merges-filename {BPE_MERGES}",  # TODO(susanz): hack for getting interactive_hosted working on public repo
     f"--vocab-filename {BPE_VOCAB}",  # TODO(susanz): hack for getting interactive_hosted working on public repo
-    f"--path {CHECKPOINT_LOCAL}",
+    # f"--path {CHECKPOINT_LOCAL}",
+    f"--path {MODEL_FILE}",
     "--beam 1 --nbest 1",
     # "--distributed-port 13000",
+    "--distributed-port -1",     # HAO changed from 13000 to -1
     "--checkpoint-shard-count 1",
     # "--use-sharded-state",
     f"--batch-size {BATCH_SIZE}",
     f"--buffer-size {BATCH_SIZE * MAX_SEQ_LEN}",
     f"--max-tokens {BATCH_SIZE * MAX_SEQ_LEN}",
-    "/tmp",  # required "data" argument.
+    f"{CHECKPOINT_FOLDER}",  # required "data" argument.
 ]

@@ -136,6 +136,7 @@ class SequenceGenerator(nn.Module):
                 'static_self_attn_padding_mask': static_self_attn_padding_mask,
                 'static_incremental_states': static_incremental_states
             }
+            # print("HAO: allocate static, ", static_single_input_embedding.shape, ", ", static_masked_tokens.shape, ", ", static_self_attn_padding_mask.shape, ", ", len(static_incremental_states))
             self._warmup(seq_len)
 
 
@@ -412,6 +413,7 @@ class SequenceGenerator(nn.Module):
             next_scores, next_toks = self._sample_topp(lprobs, sampling_topp, temperature)
             tokens[:, step] = next_toks
             scores[:, step] = next_scores
+            # print("HAO: next token ", step, ", ", next_toks, ", ", tokens.shape)
 
             eos_mask |= next_toks == self.eos
             for stop_token in self.stop:
@@ -426,6 +428,7 @@ class SequenceGenerator(nn.Module):
             start.record()
 
             x, _, _ = self.model.decoder.forward_embedding(tokens[:, : step + 1], None)
+            # print("HAO: ", x.shape)
 
             seq_len_cuda_graph = self._get_cached_seq_len(step)
             self._copy_static_inputs(seq_len_cuda_graph, x[:, -1:, :], step)
@@ -437,6 +440,7 @@ class SequenceGenerator(nn.Module):
             # If we are at boundary of seq lenghts buckets, then copy
             # static incremental states from previous bucket to new bucket
             if new_seq_len_cuda_graph != seq_len_cuda_graph:
+                # print("HAO: COPYING ")
                 current_static_incremental_states = self._static_inputs[seq_len_cuda_graph]['static_incremental_states']
                 new_static_incremental_states = self._static_inputs[new_seq_len_cuda_graph]['static_incremental_states']
                 self._copy_incremental_state_to_static_ones(current_static_incremental_states, new_static_incremental_states, offset=0)

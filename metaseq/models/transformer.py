@@ -802,6 +802,7 @@ class TransformerDecoder(BaseDecoder):
                 static_masked_tokens=static_masked_tokens,
             )
             l_aux.append(l_aux_i)
+            # print("HAO: forward_transformer_layers, layer idx= ", idx, ", ", x.shape, ", ", prev_k.shape, ", ", prev_v.shape)
             new_attention_states.append({
                 'prev_key': prev_k,
                 'prev_value': prev_v,
@@ -824,6 +825,8 @@ class TransformerDecoder(BaseDecoder):
 
         if self.project_out_dim is not None:
             x = self.project_out_dim(x)
+
+        # print("HAO: record_graph: forward_transformer_layers: ", x.shape, ", ", type(attn), ", ", len(inner_states), ", ", len(new_attention_states))
 
         return x, {"attn": [attn], "inner_states": inner_states, "l_aux": l_aux}, new_attention_states
 

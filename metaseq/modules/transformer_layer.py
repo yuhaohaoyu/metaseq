@@ -485,6 +485,14 @@ class TransformerDecoderLayer(nn.Module):
         Returns:
             encoded output of shape `(seq_len, batch, embed_dim)`
         """
+        try:
+            self.counter += 1
+        except AttributeError:
+            self.counter = 0
+
+#        if self.counter % 96 == 13:
+#            print('NWANG input       shape to decoder layer', x.shape)
+#            print("HAO: incremental_state: ", incremental_state)
         residual = x
 
         if self.normalize_before:
@@ -521,6 +529,10 @@ class TransformerDecoderLayer(nn.Module):
         x = self.residual_connection(x, residual)
         if not self.normalize_before:
             x = self.final_layer_norm(x)
+
+        # if self.counter % 32 == 0:
+        #     print('NWANG output    x shape of decoder layer', x.shape)
+
         return x, attn, None, l_aux, (prev_k, prev_v)
 
     def make_generation_fast_(self, need_attn: bool = False, **kwargs):
